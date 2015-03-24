@@ -6,7 +6,7 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = 0;
+    this.x = 83*-1;
     this.y = 83*3;
 }
 
@@ -30,29 +30,36 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 var Player = function() {
     this.x = 101*2;
-    this.y = 83*6;
+    this.y = 83*5;
     this.sprite = 'images/char-boy.png';
 }
 Player.prototype.handleInput = function(key){
+    var deltaX = 0;
+    var deltaY = 0;
     switch(key){
         case 'left': 
-            this.x = this.x -101;
+            deltaX = -101;
             break;
         case 'right' : 
-            this.x = this.x +101;
+            deltaX = 101;
             break;
         case 'up' :
-            this.y = this.y -83;
+            deltaY = -83;
             break;
         case 'down' :
-            this.y = this.y +83;
+            deltaY = 83;
             break;
         default:
             break;
     }
-}
-Player.prototype.move = function(direction){
 
+    if(this.x + deltaX < 101 * 5 && this.x + deltaX >= 0){
+        this.x = this.x + deltaX;
+    }
+
+    if(this.y + deltaY < 83 * 6 && this.y + deltaY >= 0){
+        this.y = this.y + deltaY;
+    }
 }
 Player.prototype.update = function(){
 
@@ -63,7 +70,7 @@ Player.prototype.render = function(){
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [new Enemy(), new Enemy()];
+var allEnemies = [new Enemy(), new Enemy(), new Enemy()];
 var player = new Player();
 
 // This listens for key presses and sends the keys to your
