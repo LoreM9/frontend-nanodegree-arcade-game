@@ -7,7 +7,7 @@ var Enemy = function() {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     this.x = 101*-1;
-    this.y = 83*Math.floor((Math.random() * 3) + 1);
+    this.y = 83*Math.floor((Math.random() * 3) + 1) - 20;
     this.speed = Math.floor((Math.random() * 70) + 10);
 }
 
@@ -34,7 +34,7 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 var Player = function() {
     this.x = 101*2;
-    this.y = 83*5;
+    this.y = 83*5 -10;
     this.sprite = 'images/char-boy.png';
 }
 Player.prototype.handleInput = function(key){
@@ -61,7 +61,7 @@ Player.prototype.handleInput = function(key){
         this.x = this.x + deltaX;
     }
 
-    if(this.y + deltaY < 83 * 6 && this.y + deltaY >= 0){
+    if(this.y + deltaY < 83 * 6 -15 && this.y + deltaY >= -15){
         this.y = this.y + deltaY;
     }
 }
