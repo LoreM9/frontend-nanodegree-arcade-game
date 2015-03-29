@@ -1,3 +1,6 @@
+var ENTITIES_WIDTH = 101;
+var ENTITIES_HEIGHT = 83;
+
 // Enemies our player must avoid
 var Enemy = function() {
     // Variables applied to each of our instances go here,
@@ -6,9 +9,17 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = 101*-1;
-    this.y = 83*Math.floor((Math.random() * 3) + 1) - 20;
-    this.speed = Math.floor((Math.random() * 70) + 10);
+    this.x = ENTITIES_WIDTH * -1;
+    this.speed = calculateRandomSpeed();
+    this.y = calculateRandomY();
+}
+
+var calculateRandomY = function(){
+    return ENTITIES_HEIGHT*Math.floor((Math.random() * 3) + 1) - 20;
+}
+
+var calculateRandomSpeed = function(){
+    return Math.floor((Math.random() * 70) + 10);
 }
 
 // Update the enemy's position, required method for game
@@ -18,10 +29,11 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x = this.x + this.speed * dt;
-    if(this.x > 101 * 5){
-        this.x = 101*-1;
+    if(this.x > ENTITIES_WIDTH * 5){
+        this.x = ENTITIES_WIDTH * -1;
+        this.speed = calculateRandomSpeed();
+        this.y = calculateRandomY();
     }
-
 }
 
 // Draw the enemy on the screen, required method for game
@@ -29,12 +41,30 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+Enemy.prototype.isKillingPlayer = function(player) {
+    var playerLeft = player.x + 15;
+    var playerRight = player.x + ENTITIES_WIDTH -15;
+    var playerTop = player.y;
+    var playerBottom = player.y + ENTITIES_HEIGHT - 11;
+    var myLeft = this.x + 15;
+    var myRight = this.x + ENTITIES_WIDTH - 15;
+    var myTop = this.y;
+    var myBottom = this.y + ENTITIES_HEIGHT - 11;
+
+    var collision = !(playerLeft > myRight ||
+            playerRight < myLeft ||
+            playerTop > myBottom ||
+            playerBottom < myTop);
+    return collision;
+}
+
+
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
-    this.x = 101*2;
-    this.y = 83*5 -10;
+    this.x = calculateInitialPlayerX();
+    this.y = calculateInitialPlayerY();
     this.sprite = 'images/char-boy.png';
 }
 Player.prototype.handleInput = function(key){
@@ -42,35 +72,49 @@ Player.prototype.handleInput = function(key){
     var deltaY = 0;
     switch(key){
         case 'left': 
-            deltaX = -101;
+            deltaX = -ENTITIES_WIDTH;
             break;
         case 'right' : 
-            deltaX = 101;
+            deltaX = ENTITIES_WIDTH;
             break;
         case 'up' :
-            deltaY = -83;
+            deltaY = -ENTITIES_HEIGHT;
             break;
         case 'down' :
-            deltaY = 83;
+            deltaY = ENTITIES_HEIGHT;
             break;
         default:
             break;
     }
 
-    if(this.x + deltaX < 101 * 5 && this.x + deltaX >= 0){
+    if(this.x + deltaX < ENTITIES_WIDTH * 5 && this.x + deltaX >= 0){
         this.x = this.x + deltaX;
     }
 
-    if(this.y + deltaY < 83 * 6 -15 && this.y + deltaY >= -15){
+    if(this.y + deltaY < ENTITIES_HEIGHT * 6 -15 && this.y + deltaY >= -15){
         this.y = this.y + deltaY;
     }
 }
 Player.prototype.update = function(){
-
+    for(var enemyIndex in allEnemies){
+        var enemy = allEnemies[enemyIndex];
+        if(enemy.isKillingPlayer(this)){
+            this.y = calculateInitialPlayerY();
+        }
+    }
 }
 Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y)
 }
+
+var calculateInitialPlayerY = function(){
+    return ENTITIES_HEIGHT*5 -10;
+}
+
+var calculateInitialPlayerX = function(){
+    return ENTITIES_WIDTH*2;i
+}
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
