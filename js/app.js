@@ -9,13 +9,16 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = ENTITIES_WIDTH * -1;
+    this.x = calculateRandomX();
     this.speed = calculateRandomSpeed();
     this.y = calculateRandomY();
 }
 
 var calculateRandomY = function(){
     return ENTITIES_HEIGHT*Math.floor((Math.random() * 3) + 1) - 20;
+}
+var calculateRandomX = function (){
+    return ENTITIES_WIDTH * Math.floor((Math.random() * 5) + 1);
 }
 
 var calculateRandomSpeed = function(){
